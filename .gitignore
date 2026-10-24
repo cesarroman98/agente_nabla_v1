@@ -1,0 +1,27 @@
+---
+
+### 2. Archivo `.gitignore` (Qué NO subir a GitHub)
+
+Crea un archivo llamado `.gitignore` en a raíz de `Agente_Nabla_v1.1/` para evitar subir carpetas pesadas, entornos virtuales o archivos temporales:
+
+```text
+# Entorno virtual
+.venv/
+venv/
+ENV/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos vectorial local (se regenera con ingestor_pdf.py)
+db_normas/
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
