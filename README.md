@@ -63,7 +63,7 @@ O **Agente NABLA** é uma solução multi-agente baseada em IA e RAG (Retrieval-
 ### Instalação
 ```bash
 # Clone o repositório
-git clone [https://github.com/SEU_USUARIO/agente-nabla.git](https://github.com/SEU_USUARIO/agente-nabla.git)
+git clone [https://github.com/cesarroman98/agente_nabla_v1.git](https://github.com/cesarroman98/agente_nabla_v1.git)
 cd agente-nabla/Agente_Nabla_v1.1
 
 # Instale as dependências

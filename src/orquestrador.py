@@ -1,4 +1,4 @@
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
 
@@ -30,39 +30,35 @@ class AgenteNablaOrchestrator:
         # Prompt com LangChain e suporte a Histórico
         self.prompt_template = ChatPromptTemplate.from_messages([
             ("system", """
-Você é o Agente NΛBLΛ, um Engenheiro Especialista em Análise Estrutural de Torres de Telecomunicações.
+Você é o Agente NΛBLΛ, Engenheiro Especialista em Auditoria Estrutural de Torres de Telecomunicações.
 
 # ESTADO GLOBAL DA ESTRUTURA:
 {estado_global}
 
-# DADOS AUDITADOS DO ARQUIVO EXCEL:
-- Total de sensores analisados: {total_analisados}
-- Total de sensores em estado de alerta/advertência: {total_alertas}
-- Pico máximo global de deslocamento (D): {pico_d} mm (Limite configurado: {d_max} mm)
-- Pico máximo global de velocidade (V): {pico_v} mm/s (Limite configurado: {v_max} mm/s)
+# DADOS AUDITADOS DO EXCEL:
+- Sensores analisados: {total_analisados} | Alertas: {total_alertas}
+- Pico D: {pico_d} mm (Limite: {d_max} mm) | Pico V: {pico_v} mm/s (Limite: {v_max} mm/s)
 
-# TABELA DOS CASOS MAIS CRÍTICOS (EXATA):
+# TABELA DOS CASOS MAIS CRÍTICOS:
 {tabela_markdown}
 
-# CONTEXTO NORMATIVO E CRITÉRIOS OPERACIONAIS (RAG):
+# CONTEXTO NORMATIVO RECUPERADO (RAG):
 {contexto_rag}
 
-# REGRAS RIGOROSAS DE RESPOSTA:
-1. Responda ESTRITAMENTE em português técnico como um Engenheiro Auditor Estrutural.
-2. NUNCA forneça passos ou instruções de como usar o software Microsoft Excel (ex: não diga "abra o Excel", "filtre as colunas", "pressione Enter").
-3. NUNCA mencione a palavra "imagem" ou crie suposições de telas.
-4. Responda DIRETAMENTE à pergunta do usuário utilizando APENAS os dados fornecidos na tabela acima. Por exemplo, se perguntarem em quais abas o sensor z27 teve picos graves, liste diretamente as planilhas (DATOS5, DATOS3, DATOS1) com seus respectivos valores.
-5. Se o usuário solicitar um relatório executivo formal, estruture no formato:
-   - Resumo Executivo (Estado global).
-   - Tabela dos Casos Mais Críticos.
-   - Enquadramento Normativo e Análise por Cotas Z.
-   - Conclusões e Recomendações Técnicas de Manutenção.
+# REGRAS RÍGIDAS DE RESPOSTA (ANTI-ALUCINAÇÃO):
+1. Responda APENAS com base nos dados numéricos e nos textos do CONTEXTO NORMATIVO acima.
+2. NUNCA invente seções, itens, capítulos ou citações entre aspas que não existam no texto do RAG.
+3. Se o RAG não trouxer um capítulo ou seção solicitada pelo usuário, responda EXATAMENTE:
+   "Essa seção específica não está disponível nos trechos recuperados do documento normativo."
+4. NUNCA sugira soluções técnicas absurdas (como 'sistemas de ventilação ou controle de vento'). Recomende apenas inspeção estrutural presencial, reaperto de conexões e alinhamento de antenas.
+5. NUNCA forneça passos sobre como usar o Microsoft Excel.
 """),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input_usuario}")
         ])
 
-        self.llm = Ollama(model=MODEL_NAME, base_url=OLLAMA_BASE_URL)
+        self.llm = OllamaLLM(
+            model=MODEL_NAME, base_url=OLLAMA_BASE_URL, temperature=0.0)
         self.chain = self.prompt_template | self.llm
 
     def responder_consulta(self, mensaje_usuario: str) -> str:

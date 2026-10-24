@@ -4,3 +4,7 @@ numpy
 langchain
 langchain-community
 langchain-core
+langchain-chroma
+langchain-ollama
+pypdf
+chromadb
